@@ -1,123 +1,70 @@
+# Reusable Onboarding Tour Templates
 
-# Onboarding Studio for Drainage & Hydraulic Modeling Apps
+Add a curated, built-in **template library** covering all five simulated products. Templates are first-class, read-only blueprints that users can preview, then **clone into their library** to play or edit as a normal tour.
 
-A single web app that does three jobs at once for **InfoWorks ICM**, **InfoWorks ICM SWMM Networks**, **EPA SWMM5**, **Autodesk InfoDrainage**, and **drainage analysis in Civil 3D**:
+## What ships
 
-1. **Simulate** each product as a high-fidelity, clickable replica.
-2. **Author** product tours and help articles (steps, tooltips, hotspots, branching).
-3. **Generate** tour content with AI from a goal like "teach a new user to import a SWMM5 .inp and run a steady-state sim".
+For each product, 2–3 ready-to-use templates targeting the canonical "new user" jobs-to-be-done, each anchored to the existing `data-sim` selectors in the workspace screens:
 
-The simulated product becomes the *canvas* the tour plays on — same component, used in author mode, preview mode, and "new user" simulation mode.
+- **InfoWorks ICM**
+  - *First model in 10 minutes* — Start Page → Master DB → open Network → Run dialog → Results browser
+  - *Reading 2D mesh results* — Network+2D Mesh → Results browser (depth/velocity layers)
+  - *Setting up a simulation run* — Run dialog walkthrough (engine, timesteps, output)
+- **ICM SWMM Networks**
+  - *Build a SWMM network in ICM* — Explorer → Subcatchment Map → Run setup → Time-series
+  - *Compare SWMM vs ICM engine* — Run setup callouts + results panel
+- **EPA SWMM 5**
+  - *Your first SWMM5 project* — Project tree → Study area map → Run → Status report
+  - *Interpreting the status report* — Run status → continuity errors → report
+- **InfoDrainage**
+  - *Design a SuDS scheme* — Site plan → Stormwater controls → Analysis → Compliance
+  - *Generate a compliance report* — Analysis → Compliance report
+- **Civil 3D — Drainage**
+  - *Pipe network drainage analysis* — Drawing → Toolspace → Parts list → Analyze
+  - *From draft to analyzed network* — Toolspace parts → Analyze workflow
 
----
+Each template includes: title, persona, goal, ordered steps (screen + `targetSim` + title + markdown body + action), a short **help article**, and a small **glossary** (e.g. "subcatchment", "SuDS", "outfall", "continuity error").
 
-## What the user gets in v1
+## UX
 
-- **Product hub**: 5 product cards (ICM, ICM SWMM, SWMM5, InfoDrainage, Civil 3D Drainage). Each opens a dedicated simulated workspace.
-- **Simulated workspaces** (high-fidelity, schematic where exact UI is unknowable): replica ribbon/menus, model tree / project explorer, map/canvas area, properties grid, output/results pane. Each product gets its own chrome (Innovyze blue ICM, Autodesk dark Civil 3D ribbon, SWMM5 classic MDI, InfoDrainage card-based).
-- **Tour player**: spotlight overlay, tooltip bubbles, "Next / Back / Skip", progress bar, branching ("did the import succeed?"), and a "let me try" mode that locks the UI to one valid click.
-- **Tour authoring**: pick a screen → click any element → add a step (title, body markdown, hotspot shape, required action, branch). Reorder via drag-and-drop. Live preview.
-- **AI tour designer**: enter product + learner persona + goal → AI returns a structured tour (steps, copy, suggested hotspots, help article, glossary). Editable before save. Streamed via Lovable AI Gateway (`google/gemini-3-flash-preview` default).
-- **Help system**: per-product searchable help center generated alongside each tour — articles, FAQs, glossary, "related tours".
-- **Library**: saved tours, versioning, duplicate, fork across products ("port this ICM tour to SWMM5").
-- **Export**: JSON (schema below), Markdown handbook, printable PDF (browser print route), and a shareable read-only preview link.
-- **Telemetry of the simulation itself**: track which step new users get stuck on (time-on-step, skips, wrong clicks) to mark "friction points" in the authoring UI.
+- New route **`/templates`** — gallery grouped by product, with cards (title, persona, step count, est. time, "what you'll learn"). Filters: product, persona (engineer / reviewer / student), length.
+- Card actions:
+  - **Preview** → opens the workspace with the template's `TourOverlay` running in read-only mode (no save).
+  - **Use template** → clones the template into the user's library (new `id`, `createdAt`, `updatedAt`) and navigates to the author route, ready to edit.
+- Entry points: "Browse templates" button on the Hub (`/`), the Tour Library (`/tours`), and inside `AIGenerateDialog` as "Start from a template instead".
+- Template cards on the product workspace (`/products/$productId`) show only that product's templates.
 
-## Honest scope note
+## Data + code structure
 
-Five drainage apps at *true* pixel-fidelity is a months-long art project. v1 commits to **high-fidelity schematic replicas**: correct layout grammar, menu/ribbon structure, signature panels, and 4–6 deeply modeled screens per product (the ones a new user actually meets in the first hour). Deeper screens render as annotated placeholders the tour can still point at. We can densify product-by-product after v1.
+- New `src/lib/tour-templates/` directory:
+  - `index.ts` — `TEMPLATES: TourTemplate[]` aggregator + `templatesForProduct(id)`.
+  - `icm.ts`, `icm-swmm.ts`, `swmm5.ts`, `infodrainage.ts`, `civil3d.ts` — one file per product, each exporting a typed array.
+- New type in `src/lib/tour-types.ts`:
+  ```ts
+  interface TourTemplate extends Omit<Tour, 'id'|'createdAt'|'updatedAt'> {
+    templateId: string;           // stable slug, e.g. "icm.first-model"
+    estMinutes: number;
+    learn: string[];              // bullet outcomes for the card
+    category: 'getting-started' | 'analysis' | 'reporting';
+  }
+  ```
+- `src/lib/tour-storage.ts` gains `cloneTemplate(t: TourTemplate): Tour` — assigns new uuid/timestamps, calls `saveTour`, returns the new tour.
+- New routes:
+  - `src/routes/templates.tsx` — gallery (filters + grid).
+  - `src/routes/templates.$templateId.tsx` — preview (uses `ProductWorkspace` + `TourOverlay` in read-only mode, "Use this template" CTA).
+- `TourOverlay` accepts an optional `readOnly` prop to hide author-only affordances during preview.
+- All template `targetSim` values must match existing selectors already emitted by `Ribbon` (`tab-*`, `tool-*`, `menu-*`) and the other sim primitives. Where a needed hotspot is missing, add a `data-sim` attribute to the relevant sim component — no behavior changes.
 
-## Per-product v1 screen set (4–6 each)
+## Out of scope
 
-- **InfoWorks ICM**: Start page → Master DB / Model Group tree → 2D mesh + network map → Run dialog → Results browser.
-- **ICM SWMM Networks**: Network explorer → Subcatchment/conduit map → SWMM run setup → Time-series results.
-- **SWMM5 (EPA)**: Classic MDI shell → Project tree (Subcatchments/Junctions/Conduits/Raingages) → Study area map → Run status → Status report + time-series plot.
-- **InfoDrainage**: Project dashboard → Site plan canvas → Stormwater control library → Analysis run → Results & compliance report.
-- **Civil 3D drainage**: Ribbon (Home / Analyze / Output) → Toolspace (Prospector/Settings) → Drawing area with pipe network → Parts list / Pipe Network Properties → Analyze drainage workflow.
-
-Each replica is built from shared primitives (`<Ribbon>`, `<ModelTree>`, `<MapCanvas>`, `<PropertiesGrid>`, `<ResultsPane>`, `<StatusBar>`) themed per product via CSS tokens — so adding screens later is cheap.
-
----
-
-## How it works (technical section)
-
-### Stack
-- TanStack Start (existing), Tailwind v4, shadcn, framer-motion for spotlight/tooltip motion.
-- **Lovable Cloud** enabled → Postgres for tours, accounts (Supabase Auth, email + Google), storage for screenshot assets, RLS per user/workspace.
-- **Lovable AI Gateway** via server functions for tour generation (`google/gemini-3-flash-preview`; streamed for the long generations).
-
-### Routes
-```
-/                                  hub: product picker + recent tours
-/products/$productId               simulated workspace (default screen)
-/products/$productId/$screenId     specific screen
-/tours                             library
-/tours/$tourId                     author mode (sim canvas + side panel)
-/tours/$tourId/play                player mode (sim canvas + tour overlay)
-/tours/$tourId/print               print route for PDF export
-/help/$productId                   generated help center
-/api/ai/generate-tour              server route, streamed SSE
-/api/ai/generate-help-article      server route, streamed SSE
-/api/public/share/$shareId         read-only public tour preview
-```
-
-### Data model (Lovable Cloud, all with RLS by `owner_id`)
-- `products` (seeded, 5 rows) — id, name, theme tokens, screen registry pointer.
-- `tours` — id, owner_id, product_id, title, persona, goal, status, version, fork_of.
-- `tour_steps` — id, tour_id, order, screen_id, hotspot {selector|coords|shape}, title, body_md, required_action, branch_rules jsonb.
-- `help_articles` — id, owner_id, product_id, tour_id (nullable), title, body_md, tags.
-- `tour_runs` — id, tour_id, anon_session_id, started_at, finished_at.
-- `tour_run_events` — run_id, step_id, event (`view|next|back|skip|wrong_click|complete`), ms_on_step.
-- `user_roles` (separate table, per security rules) — owner / editor / viewer.
-- `share_links` — id, tour_id, slug, expires_at (read-only `/api/public/share`).
-
-### Tour JSON schema (export & AI output)
-```json
-{
-  "product": "swmm5",
-  "title": "Run your first SWMM5 simulation",
-  "persona": "civil engineer new to SWMM",
-  "steps": [
-    { "screen": "project-tree", "hotspot": {"selector": "[data-sim='node-subcatchments']"},
-      "title": "Subcatchments live here", "body": "...", "action": "click",
-      "branches": [{"if": "skipped", "go": "step-glossary-subcatchment"}] }
-  ],
-  "help": [{ "title": "What is a subcatchment?", "body_md": "..." }],
-  "glossary": [{ "term": "Subcatchment", "def": "..." }]
-}
-```
-
-### AI generation
-- Server function `generateTour` → POST `/v1/chat/completions` with tool-calling (`emit_tour` function whose parameters mirror the schema above). Streams chunks via `/api/ai/generate-tour` (server route, raw `Response`). The author UI shows steps appearing live.
-- Separate `generateHelpArticle` (non-streamed, `supabase.functions.invoke`-style server fn) for individual articles.
-- 402/429 surfaced as toasts ("Add credits in Settings → Workspace → Usage").
-
-### Simulation engine
-- Each product screen is a real React tree with `data-sim="..."` attributes on interactive elements.
-- The tour player resolves hotspots by `data-sim` selector first, falls back to coords overlay if the element is offscreen.
-- "Let me try" mode: a single transparent overlay covers everything except the matched element, so the new user is physically guided to the right click — that's the core "simulated onboarding" feel.
-
-### Design direction
-Two-pane chrome: a calm, neutral *studio shell* (off-white #FAFAF7, ink #14181D, accent oklch teal) wrapping per-product workspaces that adopt that product's own visual language. Studio uses one display font + one mono (e.g., `@fontsource/space-grotesk` + `@fontsource/jetbrains-mono`). Per-product themes override CSS tokens only inside the workspace frame.
-
-### Out of scope for v1
-- Real hydraulic computation. The "Run" button plays a canned result.
-- Importing real `.inp` / `.icmm` / `.dwg` files. We ship demo projects.
-- Multi-tenant orgs / SSO / billing.
-
----
+- AI-generating new templates (existing `AIGenerateDialog` already covers that).
+- Cloud-side template sharing / community submissions.
+- Editing templates in place — clone-to-edit only, keeping templates as a stable seed set.
 
 ## Build order
 
-1. Enable Lovable Cloud; migrations for the schema above + seed `products`.
-2. Studio shell, routing, product hub, auth.
-3. Shared simulation primitives (`Ribbon`, `ModelTree`, `MapCanvas`, `PropertiesGrid`, `ResultsPane`).
-4. Product 1 end-to-end (SWMM5 — simplest UI grammar) including 5 screens.
-5. Tour data model + author mode + player overlay + "let me try".
-6. AI generate-tour server route (streamed) wired to author mode.
-7. Help center generation + library + export (JSON/Markdown/print PDF).
-8. Public share links (`/api/public/share/$slug`).
-9. Replicate steps 4 for the other four products in turn (shared primitives keep this cheap).
-10. Friction-point telemetry surfaced in author mode.
-
-Ready to enable Lovable Cloud and start building when you approve.
+1. Types + storage helper (`cloneTemplate`, `TourTemplate`).
+2. Author the 5 product template files (content + selectors).
+3. `/templates` gallery + `/templates/$templateId` preview routes.
+4. Entry points on Hub, Library, workspace, and AI dialog.
+5. Add any missing `data-sim` selectors uncovered while authoring steps.

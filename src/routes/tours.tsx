@@ -22,10 +22,19 @@ function Library() {
       <Link to="/" className="mb-6 inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground">
         <ArrowLeft className="h-4 w-4" /> Back to studio
       </Link>
-      <h1 className="mb-6 font-display text-3xl font-semibold">Tour library</h1>
+      <div className="mb-6 flex items-center justify-between">
+        <h1 className="font-display text-3xl font-semibold">Tour library</h1>
+        <Link
+          to="/templates"
+          className="rounded-md px-3 py-1.5 text-sm font-medium ring-1 ring-border hover:bg-secondary"
+        >
+          Browse templates →
+        </Link>
+      </div>
       {tours.length === 0 ? (
         <p className="text-sm text-muted-foreground">
-          No tours yet. Open a product and generate one with AI, or author one manually.
+          No tours yet. <Link to="/templates" className="underline">Start from a template</Link>, open a
+          product to generate one with AI, or author one manually.
         </p>
       ) : (
         <div className="divide-y divide-border rounded-lg border border-border">

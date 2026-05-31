@@ -1,6 +1,6 @@
 import { useMemo, useRef, useState } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { ArrowLeft, Sparkles, ListPlus, Play } from "lucide-react";
+import { ArrowLeft, Sparkles, ListPlus, Play, BookTemplate } from "lucide-react";
 import { ProductWorkspace } from "@/components/sim/ProductWorkspace";
 import { TourOverlay } from "@/components/tour/TourOverlay";
 import { AIGenerateDialog } from "@/components/tour/AIGenerateDialog";
@@ -38,6 +38,12 @@ function ProductPage() {
           <span className="font-display text-sm font-semibold">{product.name}</span>
         </div>
         <div className="flex items-center gap-2">
+          <Link
+            to="/templates"
+            className="inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium ring-1 ring-border hover:bg-secondary"
+          >
+            <BookTemplate className="h-3.5 w-3.5" /> Templates
+          </Link>
           <button
             onClick={() => setAiOpen(true)}
             className="inline-flex items-center gap-1.5 rounded-md bg-foreground px-3 py-1.5 text-xs font-medium text-background hover:opacity-90"
