@@ -9,38 +9,112 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as ToursRouteImport } from './routes/tours'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ToursTourIdRouteImport } from './routes/tours.$tourId'
+import { Route as ProductsProductIdRouteImport } from './routes/products.$productId'
+import { Route as ToursTourIdPlayRouteImport } from './routes/tours.$tourId.play'
+import { Route as ApiAiGenerateTourRouteImport } from './routes/api/ai/generate-tour'
 
+const ToursRoute = ToursRouteImport.update({
+  id: '/tours',
+  path: '/tours',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ToursTourIdRoute = ToursTourIdRouteImport.update({
+  id: '/$tourId',
+  path: '/$tourId',
+  getParentRoute: () => ToursRoute,
+} as any)
+const ProductsProductIdRoute = ProductsProductIdRouteImport.update({
+  id: '/products/$productId',
+  path: '/products/$productId',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ToursTourIdPlayRoute = ToursTourIdPlayRouteImport.update({
+  id: '/play',
+  path: '/play',
+  getParentRoute: () => ToursTourIdRoute,
+} as any)
+const ApiAiGenerateTourRoute = ApiAiGenerateTourRouteImport.update({
+  id: '/api/ai/generate-tour',
+  path: '/api/ai/generate-tour',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/tours': typeof ToursRouteWithChildren
+  '/products/$productId': typeof ProductsProductIdRoute
+  '/tours/$tourId': typeof ToursTourIdRouteWithChildren
+  '/api/ai/generate-tour': typeof ApiAiGenerateTourRoute
+  '/tours/$tourId/play': typeof ToursTourIdPlayRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/tours': typeof ToursRouteWithChildren
+  '/products/$productId': typeof ProductsProductIdRoute
+  '/tours/$tourId': typeof ToursTourIdRouteWithChildren
+  '/api/ai/generate-tour': typeof ApiAiGenerateTourRoute
+  '/tours/$tourId/play': typeof ToursTourIdPlayRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/tours': typeof ToursRouteWithChildren
+  '/products/$productId': typeof ProductsProductIdRoute
+  '/tours/$tourId': typeof ToursTourIdRouteWithChildren
+  '/api/ai/generate-tour': typeof ApiAiGenerateTourRoute
+  '/tours/$tourId/play': typeof ToursTourIdPlayRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/tours'
+    | '/products/$productId'
+    | '/tours/$tourId'
+    | '/api/ai/generate-tour'
+    | '/tours/$tourId/play'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/tours'
+    | '/products/$productId'
+    | '/tours/$tourId'
+    | '/api/ai/generate-tour'
+    | '/tours/$tourId/play'
+  id:
+    | '__root__'
+    | '/'
+    | '/tours'
+    | '/products/$productId'
+    | '/tours/$tourId'
+    | '/api/ai/generate-tour'
+    | '/tours/$tourId/play'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ToursRoute: typeof ToursRouteWithChildren
+  ProductsProductIdRoute: typeof ProductsProductIdRoute
+  ApiAiGenerateTourRoute: typeof ApiAiGenerateTourRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/tours': {
+      id: '/tours'
+      path: '/tours'
+      fullPath: '/tours'
+      preLoaderRoute: typeof ToursRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -48,22 +122,65 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/tours/$tourId': {
+      id: '/tours/$tourId'
+      path: '/$tourId'
+      fullPath: '/tours/$tourId'
+      preLoaderRoute: typeof ToursTourIdRouteImport
+      parentRoute: typeof ToursRoute
+    }
+    '/products/$productId': {
+      id: '/products/$productId'
+      path: '/products/$productId'
+      fullPath: '/products/$productId'
+      preLoaderRoute: typeof ProductsProductIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/tours/$tourId/play': {
+      id: '/tours/$tourId/play'
+      path: '/play'
+      fullPath: '/tours/$tourId/play'
+      preLoaderRoute: typeof ToursTourIdPlayRouteImport
+      parentRoute: typeof ToursTourIdRoute
+    }
+    '/api/ai/generate-tour': {
+      id: '/api/ai/generate-tour'
+      path: '/api/ai/generate-tour'
+      fullPath: '/api/ai/generate-tour'
+      preLoaderRoute: typeof ApiAiGenerateTourRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
+interface ToursTourIdRouteChildren {
+  ToursTourIdPlayRoute: typeof ToursTourIdPlayRoute
+}
+
+const ToursTourIdRouteChildren: ToursTourIdRouteChildren = {
+  ToursTourIdPlayRoute: ToursTourIdPlayRoute,
+}
+
+const ToursTourIdRouteWithChildren = ToursTourIdRoute._addFileChildren(
+  ToursTourIdRouteChildren,
+)
+
+interface ToursRouteChildren {
+  ToursTourIdRoute: typeof ToursTourIdRouteWithChildren
+}
+
+const ToursRouteChildren: ToursRouteChildren = {
+  ToursTourIdRoute: ToursTourIdRouteWithChildren,
+}
+
+const ToursRouteWithChildren = ToursRoute._addFileChildren(ToursRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ToursRoute: ToursRouteWithChildren,
+  ProductsProductIdRoute: ProductsProductIdRoute,
+  ApiAiGenerateTourRoute: ApiAiGenerateTourRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
