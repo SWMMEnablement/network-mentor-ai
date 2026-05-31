@@ -10,33 +10,43 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ApiAiGenerateTourRouteImport } from './routes/api/ai/generate-tour'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiAiGenerateTourRoute = ApiAiGenerateTourRouteImport.update({
+  id: '/api/ai/generate-tour',
+  path: '/api/ai/generate-tour',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/api/ai/generate-tour': typeof ApiAiGenerateTourRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/api/ai/generate-tour': typeof ApiAiGenerateTourRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/api/ai/generate-tour': typeof ApiAiGenerateTourRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths: '/' | '/api/ai/generate-tour'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/api/ai/generate-tour'
+  id: '__root__' | '/' | '/api/ai/generate-tour'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ApiAiGenerateTourRoute: typeof ApiAiGenerateTourRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,12 +58,30 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/ai/generate-tour': {
+      id: '/api/ai/generate-tour'
+      path: '/api/ai/generate-tour'
+      fullPath: '/api/ai/generate-tour'
+      preLoaderRoute: typeof ApiAiGenerateTourRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ApiAiGenerateTourRoute: ApiAiGenerateTourRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
