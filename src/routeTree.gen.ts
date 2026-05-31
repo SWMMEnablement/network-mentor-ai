@@ -10,8 +10,10 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as ToursRouteImport } from './routes/tours'
+import { Route as TemplatesRouteImport } from './routes/templates'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ToursTourIdRouteImport } from './routes/tours.$tourId'
+import { Route as TemplatesTemplateIdRouteImport } from './routes/templates.$templateId'
 import { Route as ProductsProductIdRouteImport } from './routes/products.$productId'
 import { Route as ToursTourIdPlayRouteImport } from './routes/tours.$tourId.play'
 import { Route as ApiAiGenerateTourRouteImport } from './routes/api/ai/generate-tour'
@@ -19,6 +21,11 @@ import { Route as ApiAiGenerateTourRouteImport } from './routes/api/ai/generate-
 const ToursRoute = ToursRouteImport.update({
   id: '/tours',
   path: '/tours',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TemplatesRoute = TemplatesRouteImport.update({
+  id: '/templates',
+  path: '/templates',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -30,6 +37,11 @@ const ToursTourIdRoute = ToursTourIdRouteImport.update({
   id: '/$tourId',
   path: '/$tourId',
   getParentRoute: () => ToursRoute,
+} as any)
+const TemplatesTemplateIdRoute = TemplatesTemplateIdRouteImport.update({
+  id: '/$templateId',
+  path: '/$templateId',
+  getParentRoute: () => TemplatesRoute,
 } as any)
 const ProductsProductIdRoute = ProductsProductIdRouteImport.update({
   id: '/products/$productId',
@@ -49,16 +61,20 @@ const ApiAiGenerateTourRoute = ApiAiGenerateTourRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/templates': typeof TemplatesRouteWithChildren
   '/tours': typeof ToursRouteWithChildren
   '/products/$productId': typeof ProductsProductIdRoute
+  '/templates/$templateId': typeof TemplatesTemplateIdRoute
   '/tours/$tourId': typeof ToursTourIdRouteWithChildren
   '/api/ai/generate-tour': typeof ApiAiGenerateTourRoute
   '/tours/$tourId/play': typeof ToursTourIdPlayRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/templates': typeof TemplatesRouteWithChildren
   '/tours': typeof ToursRouteWithChildren
   '/products/$productId': typeof ProductsProductIdRoute
+  '/templates/$templateId': typeof TemplatesTemplateIdRoute
   '/tours/$tourId': typeof ToursTourIdRouteWithChildren
   '/api/ai/generate-tour': typeof ApiAiGenerateTourRoute
   '/tours/$tourId/play': typeof ToursTourIdPlayRoute
@@ -66,8 +82,10 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/templates': typeof TemplatesRouteWithChildren
   '/tours': typeof ToursRouteWithChildren
   '/products/$productId': typeof ProductsProductIdRoute
+  '/templates/$templateId': typeof TemplatesTemplateIdRoute
   '/tours/$tourId': typeof ToursTourIdRouteWithChildren
   '/api/ai/generate-tour': typeof ApiAiGenerateTourRoute
   '/tours/$tourId/play': typeof ToursTourIdPlayRoute
@@ -76,24 +94,30 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/templates'
     | '/tours'
     | '/products/$productId'
+    | '/templates/$templateId'
     | '/tours/$tourId'
     | '/api/ai/generate-tour'
     | '/tours/$tourId/play'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/templates'
     | '/tours'
     | '/products/$productId'
+    | '/templates/$templateId'
     | '/tours/$tourId'
     | '/api/ai/generate-tour'
     | '/tours/$tourId/play'
   id:
     | '__root__'
     | '/'
+    | '/templates'
     | '/tours'
     | '/products/$productId'
+    | '/templates/$templateId'
     | '/tours/$tourId'
     | '/api/ai/generate-tour'
     | '/tours/$tourId/play'
@@ -101,6 +125,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  TemplatesRoute: typeof TemplatesRouteWithChildren
   ToursRoute: typeof ToursRouteWithChildren
   ProductsProductIdRoute: typeof ProductsProductIdRoute
   ApiAiGenerateTourRoute: typeof ApiAiGenerateTourRoute
@@ -113,6 +138,13 @@ declare module '@tanstack/react-router' {
       path: '/tours'
       fullPath: '/tours'
       preLoaderRoute: typeof ToursRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/templates': {
+      id: '/templates'
+      path: '/templates'
+      fullPath: '/templates'
+      preLoaderRoute: typeof TemplatesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -128,6 +160,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/tours/$tourId'
       preLoaderRoute: typeof ToursTourIdRouteImport
       parentRoute: typeof ToursRoute
+    }
+    '/templates/$templateId': {
+      id: '/templates/$templateId'
+      path: '/$templateId'
+      fullPath: '/templates/$templateId'
+      preLoaderRoute: typeof TemplatesTemplateIdRouteImport
+      parentRoute: typeof TemplatesRoute
     }
     '/products/$productId': {
       id: '/products/$productId'
@@ -153,6 +192,18 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface TemplatesRouteChildren {
+  TemplatesTemplateIdRoute: typeof TemplatesTemplateIdRoute
+}
+
+const TemplatesRouteChildren: TemplatesRouteChildren = {
+  TemplatesTemplateIdRoute: TemplatesTemplateIdRoute,
+}
+
+const TemplatesRouteWithChildren = TemplatesRoute._addFileChildren(
+  TemplatesRouteChildren,
+)
+
 interface ToursTourIdRouteChildren {
   ToursTourIdPlayRoute: typeof ToursTourIdPlayRoute
 }
@@ -177,6 +228,7 @@ const ToursRouteWithChildren = ToursRoute._addFileChildren(ToursRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  TemplatesRoute: TemplatesRouteWithChildren,
   ToursRoute: ToursRouteWithChildren,
   ProductsProductIdRoute: ProductsProductIdRoute,
   ApiAiGenerateTourRoute: ApiAiGenerateTourRoute,

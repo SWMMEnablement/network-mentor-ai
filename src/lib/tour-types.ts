@@ -34,6 +34,22 @@ export interface Tour {
   updatedAt: number;
 }
 
+export type TemplateCategory = "getting-started" | "analysis" | "reporting";
+
+export interface TourTemplate {
+  templateId: string;
+  productId: ProductId;
+  title: string;
+  persona: string;
+  goal: string;
+  category: TemplateCategory;
+  estMinutes: number;
+  learn: string[];
+  steps: Omit<TourStep, "id">[];
+  help: Omit<HelpArticle, "id">[];
+  glossary: GlossaryEntry[];
+}
+
 export const newTour = (productId: ProductId, partial: Partial<Tour> = {}): Tour => ({
   id: crypto.randomUUID(),
   productId,
@@ -43,6 +59,19 @@ export const newTour = (productId: ProductId, partial: Partial<Tour> = {}): Tour
   steps: partial.steps ?? [],
   help: partial.help ?? [],
   glossary: partial.glossary ?? [],
+  createdAt: Date.now(),
+  updatedAt: Date.now(),
+});
+
+export const tourFromTemplate = (t: TourTemplate): Tour => ({
+  id: crypto.randomUUID(),
+  productId: t.productId,
+  title: t.title,
+  persona: t.persona,
+  goal: t.goal,
+  steps: t.steps.map((s) => ({ ...s, id: crypto.randomUUID() })),
+  help: t.help.map((h) => ({ ...h, id: crypto.randomUUID() })),
+  glossary: [...t.glossary],
   createdAt: Date.now(),
   updatedAt: Date.now(),
 });
