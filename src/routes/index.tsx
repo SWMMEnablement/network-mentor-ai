@@ -27,6 +27,7 @@ function Hub() {
             </div>
           </div>
           <nav className="flex items-center gap-4 text-sm">
+            <Link to="/templates" className="text-muted-foreground hover:text-foreground">Templates</Link>
             <Link to="/tours" className="text-muted-foreground hover:text-foreground">Tour library</Link>
           </nav>
         </div>
