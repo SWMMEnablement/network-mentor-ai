@@ -80,6 +80,36 @@
   --sidebar-ring: oklch(0.62 0.13 195);
 }
 
+.dark {
+  --background: oklch(0.16 0.015 250);
+  --foreground: oklch(0.95 0.005 95);
+  --card: oklch(0.20 0.02 250);
+  --card-foreground: oklch(0.95 0.005 95);
+  --popover: oklch(0.20 0.02 250);
+  --popover-foreground: oklch(0.95 0.005 95);
+  --primary: oklch(0.95 0.005 95);
+  --primary-foreground: oklch(0.18 0.02 250);
+  --secondary: oklch(0.26 0.015 250);
+  --secondary-foreground: oklch(0.95 0.005 95);
+  --muted: oklch(0.24 0.015 250);
+  --muted-foreground: oklch(0.68 0.02 250);
+  --accent: oklch(0.68 0.14 195);
+  --accent-foreground: oklch(0.15 0.02 250);
+  --destructive: oklch(0.55 0.20 27);
+  --destructive-foreground: oklch(0.98 0.005 95);
+  --border: oklch(0.30 0.02 250);
+  --input: oklch(0.30 0.02 250);
+  --ring: oklch(0.68 0.14 195);
+  --sidebar: oklch(0.18 0.02 250);
+  --sidebar-foreground: oklch(0.95 0.005 95);
+  --sidebar-primary: oklch(0.95 0.005 95);
+  --sidebar-primary-foreground: oklch(0.18 0.02 250);
+  --sidebar-accent: oklch(0.26 0.015 250);
+  --sidebar-accent-foreground: oklch(0.95 0.005 95);
+  --sidebar-border: oklch(0.30 0.02 250);
+  --sidebar-ring: oklch(0.68 0.14 195);
+}
+
 /* === Per-product workspace themes ===
    Each scopes its own surface/chrome/accent inside .product-skin. */
 .product-skin {
