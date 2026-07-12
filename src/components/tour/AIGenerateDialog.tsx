@@ -119,7 +119,7 @@ export function AIGenerateDialog({ product, open, onClose, onResult }: Props) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-foreground/40 p-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
       <div className="w-[520px] rounded-lg bg-background p-5 shadow-2xl ring-1 ring-border">
         <h2 className="mb-1 font-display text-lg font-semibold">Generate a tour with AI</h2>
         <p className="mb-4 text-xs text-muted-foreground">

@@ -164,8 +164,8 @@ function Author() {
             />
           )}
           {picking && (
-            <div className="pointer-events-none absolute inset-0 z-50 flex items-start justify-center bg-foreground/10 pt-6">
-              <div className="rounded-md bg-foreground px-3 py-1.5 text-xs text-background">
+            <div className="pointer-events-none absolute inset-0 z-50 flex items-start justify-center bg-black/20 pt-6">
+              <div className="rounded-md bg-primary px-3 py-1.5 text-xs text-primary-foreground shadow-lg ring-1 ring-border">
                 Click any element in the workspace to pick the hotspot…
               </div>
             </div>

@@ -142,7 +142,7 @@ export function TourOverlay({ steps, index, containerRef, onNext, onBack, onClos
             Step {index + 1} of {steps.length}
           </div>
           <h3 className="mb-1 font-display text-base font-semibold">{step.title}</h3>
-          <div className="prose prose-sm prose-neutral mb-3 max-w-none text-sm leading-relaxed text-foreground/80">
+          <div className="prose prose-sm mb-3 max-w-none text-sm leading-relaxed text-foreground/90 dark:prose-invert prose-p:my-1 prose-strong:text-foreground prose-code:rounded prose-code:bg-secondary prose-code:px-1 prose-code:py-0.5 prose-code:text-foreground prose-code:before:content-none prose-code:after:content-none">
             <ReactMarkdown>{step.body || "_No description yet._"}</ReactMarkdown>
           </div>
           <div className="flex items-center justify-between gap-2">
