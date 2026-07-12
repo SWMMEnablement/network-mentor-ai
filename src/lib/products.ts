@@ -6,6 +6,7 @@ export type ProductId =
   | "icm"
   | "icm-swmm"
   | "swmm5"
+  | "swmm6"
   | "infodrainage"
   | "civil3d";
 
