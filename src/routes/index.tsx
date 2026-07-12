@@ -93,7 +93,7 @@ function Hub() {
           <h1 className="mb-3 max-w-3xl font-display text-4xl font-semibold tracking-tight md:text-5xl">
             Onboarding for drainage software, without waiting on the vendor.
           </h1>
-          <p mb-8 className="mb-8 max-w-2xl text-muted-foreground">
+          <p className="mb-8 max-w-2xl text-muted-foreground">
             Design and simulate first-run experiences for five specialised hydraulic modelling apps. Click through a
             faithful replica, then hand-author or AI-generate a tour anchored to the real UI.
           </p>
