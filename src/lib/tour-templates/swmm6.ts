@@ -1,0 +1,145 @@
+import type { TourTemplate } from "@/lib/tour-types";
+
+export const SWMM6_TEMPLATES: TourTemplate[] = [
+  {
+    templateId: "swmm6.first-coupling",
+    productId: "swmm6",
+    title: "Your first coupled SWMM 6 model",
+    persona: "Engineer familiar with SWMM 5, new to HydroCouple",
+    goal: "Assemble a Rainfall → Runoff → Routing → Receiving Water pipeline and run it.",
+    category: "getting-started",
+    estMinutes: 9,
+    learn: [
+      "Understand HydroCouple components and exchange items",
+      "Add components to a workflow",
+      "Wire outputs to inputs across models",
+      "Run a coupled simulation end-to-end",
+    ],
+    steps: [
+      {
+        screenId: "components",
+        targetSim: "docpane-components",
+        title: "The component library",
+        body: "SWMM 6 splits the old monolithic engine into **HydroCouple components**. Each one exposes typed input/output exchange items you can wire together.",
+        action: "look",
+      },
+      {
+        screenId: "workflow",
+        targetSim: "component-rain",
+        title: "Rainfall component",
+        body: "This component reads a rain gauge or gridded rainfall product and publishes rainfall intensity as an output exchange item.",
+        action: "look",
+      },
+      {
+        screenId: "workflow",
+        targetSim: "component-runoff",
+        title: "Runoff component",
+        body: "Consumes rainfall and produces subcatchment runoff. It is the SWMM 6 replacement for the classic RUNOFF block.",
+        action: "look",
+      },
+      {
+        screenId: "workflow",
+        targetSim: "component-routing",
+        title: "1D Routing component",
+        body: "Takes runoff at outlets and routes flow through the pipe/channel network using dynamic wave — same core solver family as SWMM 5's EXTRAN.",
+        action: "look",
+      },
+      {
+        screenId: "workflow",
+        targetSim: "component-outfall",
+        title: "Receiving water component",
+        body: "The graph can end at a river or 3D hydrodynamic model (e.g. EFDC). Coupling is bidirectional — receiving stage feeds back to the outfall boundary.",
+        action: "look",
+      },
+      {
+        screenId: "network",
+        targetSim: "map-node-out1",
+        title: "Network editor",
+        body: "The classic node/link editor still exists — it now lives inside the Routing component. Edit junctions and conduits here.",
+        action: "look",
+      },
+      {
+        screenId: "run",
+        targetSim: "run-start",
+        title: "Run the coupled simulation",
+        body: "SWMM 6 steps every component forward in lock-step and exchanges data at each coupling time step. Click **Start**.",
+        action: "click",
+      },
+      {
+        screenId: "results",
+        targetSim: "results-pane",
+        title: "Results by component",
+        body: "Each component writes its own outputs. Continuity is reported both per-component and for the whole coupled graph.",
+        action: "look",
+      },
+    ],
+    help: [
+      {
+        title: "What is HydroCouple?",
+        body: "HydroCouple is an open-source component-based interface for coupling hydrologic and hydraulic models. See https://github.com/HydroCouple.",
+      },
+      {
+        title: "Exchange items",
+        body: "A component declares typed **input** and **output** exchange items (e.g. `flow[m³/s] at outlet_j4`). The coupling engine transfers values between components each time step.",
+      },
+      {
+        title: "How is this different from SWMM 5?",
+        body: "SWMM 5 is a single executable with RUNOFF/EXTRAN/QUAL blocks fused together. SWMM 6 exposes those blocks as HydroCouple components that can be swapped, reordered, and coupled to non-SWMM models.",
+      },
+    ],
+    glossary: [
+      { term: "Component", definition: "A pluggable model unit exposing input/output exchange items." },
+      { term: "Exchange item", definition: "A typed data channel (variable + units + element set) shared between components." },
+      { term: "Coupling time step", definition: "The interval at which exchange values are transferred between components." },
+      { term: "OpenMI", definition: "The interface standard HydroCouple extends and modernises for hydrologic modelling." },
+    ],
+  },
+  {
+    templateId: "swmm6.quality-side-loop",
+    productId: "swmm6",
+    title: "Add a water-quality side loop",
+    persona: "Analyst extending an existing coupled model",
+    goal: "Plug a Water Quality component into an existing Runoff → Routing graph.",
+    category: "analysis",
+    estMinutes: 5,
+    learn: [
+      "Add a component to an existing graph",
+      "Wire runoff pollutant loads into the quality component",
+      "Compare loads at the outfall",
+    ],
+    steps: [
+      {
+        screenId: "workflow",
+        targetSim: "component-quality",
+        title: "The Water Quality component",
+        body: "This component receives per-subcatchment pollutant build-up/wash-off and routes constituents through the pipe network alongside flow.",
+        action: "look",
+      },
+      {
+        screenId: "workflow",
+        targetSim: "tool-connect",
+        title: "Couple ports",
+        body: "Click **Couple Ports** and draw from the Runoff output port to the Quality input port. The engine validates units and element sets.",
+        action: "click",
+      },
+      {
+        screenId: "run",
+        targetSim: "run-start",
+        title: "Re-run",
+        body: "The graph re-runs with the added component. Only affected downstream components need to recompute if you enable incremental runs.",
+        action: "click",
+      },
+      {
+        screenId: "results",
+        targetSim: "results-pane",
+        title: "Constituent loads at the outfall",
+        body: "The results pane now includes TSS, BOD, and any other pollutants you defined — plotted alongside flow.",
+        action: "look",
+      },
+    ],
+    help: [],
+    glossary: [
+      { term: "Build-up / wash-off", definition: "Model of pollutant accumulation on impervious surfaces between storms, then mobilised by runoff." },
+    ],
+  },
+];

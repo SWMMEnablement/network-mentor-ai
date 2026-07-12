@@ -31,6 +31,8 @@ const SIMS_BY_SCREEN: Record<string, string[]> = {
   toolspace: ["docpane-toolspace", "node-prospector", "node-pipe-networks"],
   parts: ["docpane-parts", "node-pipe-networks"],
   analyze: ["run-dialog", "run-start"],
+  components: ["docpane-components", "tool-add-component"],
+  workflow: ["coupling-graph", "component-rain", "component-runoff", "component-routing", "component-quality", "component-outfall", "tool-connect"],
 };
 
 export function AIGenerateDialog({ product, open, onClose, onResult }: Props) {
@@ -119,7 +121,7 @@ export function AIGenerateDialog({ product, open, onClose, onResult }: Props) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-foreground/40 p-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
       <div className="w-[520px] rounded-lg bg-background p-5 shadow-2xl ring-1 ring-border">
         <h2 className="mb-1 font-display text-lg font-semibold">Generate a tour with AI</h2>
         <p className="mb-4 text-xs text-muted-foreground">

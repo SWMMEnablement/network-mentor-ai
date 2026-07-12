@@ -3,6 +3,7 @@ import type { TourTemplate } from "@/lib/tour-types";
 import { ICM_TEMPLATES } from "./icm";
 import { ICM_SWMM_TEMPLATES } from "./icm-swmm";
 import { SWMM5_TEMPLATES } from "./swmm5";
+import { SWMM6_TEMPLATES } from "./swmm6";
 import { INFODRAINAGE_TEMPLATES } from "./infodrainage";
 import { CIVIL3D_TEMPLATES } from "./civil3d";
 
@@ -10,6 +11,7 @@ export const TEMPLATES: TourTemplate[] = [
   ...ICM_TEMPLATES,
   ...ICM_SWMM_TEMPLATES,
   ...SWMM5_TEMPLATES,
+  ...SWMM6_TEMPLATES,
   ...INFODRAINAGE_TEMPLATES,
   ...CIVIL3D_TEMPLATES,
 ];

@@ -85,6 +85,13 @@ function Chrome({
       { id: "run", label: "Run SWMM", primary: true },
     ],
     swmm5: [],
+    swmm6: [
+      { id: "add-component", label: "Add Component" },
+      { id: "connect", label: "Couple Ports" },
+      { id: "validate", label: "Validate Graph" },
+      { id: "run", label: "Run", primary: true },
+      { id: "results", label: "Results" },
+    ],
     infodrainage: [
       { id: "new-site", label: "New Site" },
       { id: "pond", label: "Pond" },
@@ -137,11 +144,14 @@ function renderCenter(productId: ProductId, screenId: string) {
   if (screenId === "run" || screenId === "analysis" || screenId === "analyze") {
     return <RunPane productId={productId} />;
   }
-  if (screenId === "start" || screenId === "toolspace" || screenId === "parts") {
+  if (screenId === "workflow") {
+    return <CouplingGraphPane />;
+  }
+  if (screenId === "start" || screenId === "toolspace" || screenId === "parts" || screenId === "components") {
     return <DocPane productId={productId} screenId={screenId} />;
   }
   // Default: map
-  const surface = productId === "civil3d" ? "dark" : productId === "icm" || productId === "icm-swmm" ? "map" : "paper";
+  const surface = productId === "civil3d" ? "dark" : productId === "icm" || productId === "icm-swmm" || productId === "swmm6" ? "map" : "paper";
   return (
     <MapCanvas
       nodes={DEMO_NODES}
@@ -149,6 +159,47 @@ function renderCenter(productId: ProductId, screenId: string) {
       polygons={DEMO_POLYGONS}
       surface={surface as "dark" | "paper" | "map"}
     />
+  );
+}
+
+function CouplingGraphPane() {
+  const comps = [
+    { id: "rain", label: "Rainfall", x: 40, y: 60, color: "#38bdf8" },
+    { id: "runoff", label: "Runoff", x: 220, y: 40, color: "#22d3ee" },
+    { id: "routing", label: "1D Routing", x: 400, y: 90, color: "#14b8a6" },
+    { id: "quality", label: "Water Quality", x: 220, y: 190, color: "#a78bfa" },
+    { id: "outfall", label: "Receiving Water", x: 580, y: 160, color: "#f472b6" },
+  ];
+  const edges = [
+    ["rain", "runoff"], ["runoff", "routing"], ["runoff", "quality"],
+    ["routing", "outfall"], ["quality", "outfall"],
+  ];
+  const byId = Object.fromEntries(comps.map((c) => [c.id, c]));
+  return (
+    <div className="h-full w-full overflow-auto p-6" style={{ background: "var(--p-canvas)" }} data-sim="coupling-graph">
+      <div className="mb-4 text-xs" style={{ color: "var(--p-ink-soft)" }}>
+        Component coupling graph · drag ports to wire outputs → inputs
+      </div>
+      <svg width="720" height="280" className="rounded-md" style={{ background: "var(--p-tree)", border: "1px solid var(--p-line)" }}>
+        {edges.map(([a, b]) => {
+          const A = byId[a]; const B = byId[b];
+          return (
+            <line key={`${a}-${b}`} x1={A.x + 120} y1={A.y + 24} x2={B.x} y2={B.y + 24}
+              stroke="var(--p-accent)" strokeWidth={1.5} strokeDasharray="4 3" />
+          );
+        })}
+        {comps.map((c) => (
+          <g key={c.id} data-sim={`component-${c.id}`}>
+            <rect x={c.x} y={c.y} width={120} height={48} rx={6}
+              fill="var(--p-canvas)" stroke={c.color} strokeWidth={1.5} />
+            <circle cx={c.x} cy={c.y + 24} r={4} fill={c.color} />
+            <circle cx={c.x + 120} cy={c.y + 24} r={4} fill={c.color} />
+            <text x={c.x + 60} y={c.y + 29} textAnchor="middle" fontSize={12}
+              fill="var(--p-ink)" fontFamily="var(--font-sans)">{c.label}</text>
+          </g>
+        ))}
+      </svg>
+    </div>
   );
 }
 
@@ -265,6 +316,20 @@ function treeForProduct(productId: string) {
           },
         ],
       },
+    ];
+  }
+  if (productId === "swmm6") {
+    return [
+      { id: "components", label: "Components", children: [
+        { id: "comp-rainfall", label: "Rainfall (SWMM6)", count: 1 },
+        { id: "comp-runoff", label: "Runoff (SWMM6)", count: 1 },
+        { id: "comp-routing", label: "1D Routing (SWMM6)", count: 1 },
+        { id: "comp-quality", label: "Water Quality", count: 1 },
+        { id: "comp-receiving", label: "Receiving Water (EFDC)", count: 1 },
+      ]},
+      { id: "couplings", label: "Couplings", count: 5 },
+      { id: "scenarios", label: "Scenarios", count: 2 },
+      { id: "outputs", label: "Output Exchange Items", count: 8 },
     ];
   }
   if (productId === "civil3d") {
