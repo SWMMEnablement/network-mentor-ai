@@ -31,6 +31,8 @@ const SIMS_BY_SCREEN: Record<string, string[]> = {
   toolspace: ["docpane-toolspace", "node-prospector", "node-pipe-networks"],
   parts: ["docpane-parts", "node-pipe-networks"],
   analyze: ["run-dialog", "run-start"],
+  components: ["docpane-components", "tool-add-component"],
+  workflow: ["coupling-graph", "component-rain", "component-runoff", "component-routing", "component-quality", "component-outfall", "tool-connect"],
 };
 
 export function AIGenerateDialog({ product, open, onClose, onResult }: Props) {

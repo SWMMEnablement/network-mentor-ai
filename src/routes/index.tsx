@@ -22,6 +22,7 @@ const PRODUCT_META: Record<ProductId, { difficulty: "Beginner" | "Intermediate" 
   "icm": { difficulty: "Advanced", updated: "Jul 2026", accent: "from-sky-500/20 to-cyan-400/10" },
   "icm-swmm": { difficulty: "Intermediate", updated: "Jul 2026", accent: "from-emerald-500/20 to-teal-400/10" },
   "swmm5": { difficulty: "Beginner", updated: "Jul 2026", accent: "from-amber-500/20 to-orange-400/10" },
+  "swmm6": { difficulty: "Intermediate", updated: "Jul 2026", accent: "from-cyan-500/20 to-blue-500/10" },
   "infodrainage": { difficulty: "Intermediate", updated: "Jul 2026", accent: "from-violet-500/20 to-fuchsia-400/10" },
   "civil3d": { difficulty: "Advanced", updated: "Jul 2026", accent: "from-rose-500/20 to-pink-400/10" },
 };

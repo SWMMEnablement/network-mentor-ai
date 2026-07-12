@@ -66,6 +66,20 @@ export const PRODUCTS: ProductDef[] = [
     ],
   },
   {
+    id: "swmm6",
+    name: "EPA SWMM 6 (HydroCouple)",
+    vendor: "HydroCouple / US EPA",
+    tagline: "Next-gen SWMM built on the HydroCouple component-coupling framework.",
+    defaultScreen: "components",
+    screens: [
+      { id: "components", label: "Components" },
+      { id: "workflow", label: "Coupling Graph" },
+      { id: "network", label: "Network Editor" },
+      { id: "run", label: "Run Simulation" },
+      { id: "results", label: "Results" },
+    ],
+  },
+  {
     id: "infodrainage",
     name: "InfoDrainage",
     vendor: "Autodesk",

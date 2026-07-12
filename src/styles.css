@@ -173,6 +173,22 @@
   font-family: "Tahoma", "MS Sans Serif", var(--font-sans);
 }
 
+/* EPA SWMM 6 / HydroCouple — modern component-graph aesthetic */
+.product-skin[data-product="swmm6"] {
+  --p-bg: #0f172a;
+  --p-chrome: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+  --p-chrome-strong: #334155;
+  --p-ink: #e2e8f0;
+  --p-ink-soft: #94a3b8;
+  --p-accent: #06b6d4;
+  --p-line: #334155;
+  --p-canvas: #0b1220;
+  --p-tree: #111a2e;
+  --p-status: #020617;
+  --p-status-ink: #cbd5e1;
+}
+
+
 /* InfoDrainage — Autodesk light card-based */
 .product-skin[data-product="infodrainage"] {
   --p-bg: #f4f6f8;
