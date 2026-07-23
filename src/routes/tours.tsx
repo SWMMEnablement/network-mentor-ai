@@ -1,12 +1,20 @@
 import { useEffect, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowLeft, Play, Trash2 } from "lucide-react";
+import { ArrowLeft, Play, Trash2, Share2, FileText, Download } from "lucide-react";
 import { listTours, deleteTour } from "@/lib/tour-storage";
 import type { Tour } from "@/lib/tour-types";
 import { productById } from "@/lib/products";
+import { buildShareLink, exportTourJson, exportTourPdf } from "@/lib/tour-export";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/tours")({
   component: Library,
+  head: () => ({
+    meta: [
+      { title: "Tour library · Onboarding Studio" },
+      { name: "description", content: "Manage, export, and share your simulated onboarding tours." },
+    ],
+  }),
 });
 
 function Library() {
