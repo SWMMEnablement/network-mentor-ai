@@ -103,7 +103,8 @@ function Author() {
           <input
             value={tour.title}
             onChange={(e) => update({ ...tour, title: e.target.value })}
-            className="bg-transparent font-display text-sm font-semibold focus:outline-none"
+            className="bg-transparent font-display text-sm font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background rounded"
+            aria-label="Tour title"
           />
           <span className="text-xs text-muted-foreground">· {product.name}</span>
         </div>
