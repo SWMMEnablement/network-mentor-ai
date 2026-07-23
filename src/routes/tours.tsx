@@ -56,28 +56,60 @@ function Library() {
                     {p?.name} · {t.steps.length} steps · updated {new Date(t.updatedAt).toLocaleString()}
                   </div>
                 </div>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1.5">
                   <Link
                     to="/tours/$tourId/play"
                     params={{ tourId: t.id }}
-                    className="inline-flex items-center gap-1.5 rounded-md bg-foreground px-3 py-1.5 text-xs font-medium text-background hover:opacity-90"
+                    className="inline-flex items-center gap-1.5 rounded-md bg-foreground px-3 py-1.5 text-xs font-medium text-background hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                   >
-                    <Play className="h-3.5 w-3.5" /> Play
+                    <Play className="h-3.5 w-3.5" aria-hidden /> Play
                   </Link>
                   <Link
                     to="/tours/$tourId"
                     params={{ tourId: t.id }}
-                    className="rounded-md px-3 py-1.5 text-xs font-medium ring-1 ring-border hover:bg-secondary"
+                    className="rounded-md px-3 py-1.5 text-xs font-medium ring-1 ring-border hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                   >
                     Edit
                   </Link>
                   <button
+                    onClick={async () => {
+                      const link = buildShareLink(t);
+                      try {
+                        await navigator.clipboard.writeText(link);
+                        toast.success("Permalink copied");
+                      } catch {
+                        toast.message("Permalink", { description: link });
+                      }
+                    }}
+                    aria-label={`Copy share link for ${t.title}`}
+                    className="inline-flex items-center gap-1 rounded-md px-2 py-1.5 text-xs ring-1 ring-border hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  >
+                    <Share2 className="h-3.5 w-3.5" aria-hidden /> Share
+                  </button>
+                  <button
+                    onClick={() => exportTourPdf(t)}
+                    aria-label={`Export ${t.title} as PDF`}
+                    className="rounded-md p-1.5 text-muted-foreground ring-1 ring-border hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                    title="Export PDF"
+                  >
+                    <FileText className="h-3.5 w-3.5" aria-hidden />
+                  </button>
+                  <button
+                    onClick={() => exportTourJson(t)}
+                    aria-label={`Export ${t.title} as JSON`}
+                    className="rounded-md p-1.5 text-muted-foreground ring-1 ring-border hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                    title="Export JSON"
+                  >
+                    <Download className="h-3.5 w-3.5" aria-hidden />
+                  </button>
+                  <button
                     onClick={() => {
                       if (confirm("Delete tour?")) deleteTour(t.id);
                     }}
-                    className="rounded-md p-1.5 text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
+                    aria-label={`Delete ${t.title}`}
+                    className="rounded-md p-1.5 text-muted-foreground hover:bg-destructive/10 hover:text-destructive focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-destructive"
                   >
-                    <Trash2 className="h-3.5 w-3.5" />
+                    <Trash2 className="h-3.5 w-3.5" aria-hidden />
                   </button>
                 </div>
               </div>
