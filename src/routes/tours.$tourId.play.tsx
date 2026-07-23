@@ -1,8 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { Share2 } from "lucide-react";
 import { ProductWorkspace } from "@/components/sim/ProductWorkspace";
 import { TourOverlay } from "@/components/tour/TourOverlay";
 import { getTour } from "@/lib/tour-storage";
+import { buildShareLink } from "@/lib/tour-export";
+import { toast } from "sonner";
 import type { Tour } from "@/lib/tour-types";
 
 export const Route = createFileRoute("/tours/$tourId/play")({
