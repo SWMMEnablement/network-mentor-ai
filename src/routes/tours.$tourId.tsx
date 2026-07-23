@@ -1,11 +1,12 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { ArrowLeft, Play, Trash2, Plus, Download } from "lucide-react";
+import { ArrowLeft, Play, Trash2, Plus, Download, FileText, Share2 } from "lucide-react";
 import { ProductWorkspace } from "@/components/sim/ProductWorkspace";
 import { TourOverlay } from "@/components/tour/TourOverlay";
 import { getTour, saveTour } from "@/lib/tour-storage";
 import { productById } from "@/lib/products";
 import type { Tour, TourStep } from "@/lib/tour-types";
+import { exportTourJson, exportTourPdf, buildShareLink } from "@/lib/tour-export";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/tours/$tourId")({
@@ -59,14 +60,19 @@ function Author() {
     update({ ...tour, steps });
   };
 
-  const exportJson = () => {
-    const blob = new Blob([JSON.stringify(tour, null, 2)], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `${tour.title.replace(/\s+/g, "-")}.json`;
-    a.click();
-    URL.revokeObjectURL(url);
+  const exportJson = () => exportTourJson(tour);
+  const exportPdf = () => {
+    exportTourPdf(tour);
+    toast.success("PDF downloaded");
+  };
+  const share = async () => {
+    const link = buildShareLink(tour);
+    try {
+      await navigator.clipboard.writeText(link);
+      toast.success("Permalink copied to clipboard");
+    } catch {
+      toast.message("Permalink", { description: link });
+    }
   };
 
   // Click-to-pick: while picking, the next data-sim click becomes the target.
@@ -97,25 +103,40 @@ function Author() {
           <input
             value={tour.title}
             onChange={(e) => update({ ...tour, title: e.target.value })}
-            className="bg-transparent font-display text-sm font-semibold focus:outline-none"
+            className="bg-transparent font-display text-sm font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background rounded"
+            aria-label="Tour title"
           />
           <span className="text-xs text-muted-foreground">· {product.name}</span>
         </div>
         <div className="flex items-center gap-2">
           <button
             onClick={() => setPreview((p) => !p)}
-            className="inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium ring-1 ring-border hover:bg-secondary"
+            aria-pressed={preview}
+            className="inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium ring-1 ring-border hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
-            <Play className="h-3.5 w-3.5" /> {preview ? "Stop preview" : "Preview"}
+            <Play className="h-3.5 w-3.5" aria-hidden /> {preview ? "Stop preview" : "Preview"}
+          </button>
+          <button
+            onClick={share}
+            className="inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium ring-1 ring-border hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          >
+            <Share2 className="h-3.5 w-3.5" aria-hidden /> Share link
+          </button>
+          <button
+            onClick={exportPdf}
+            className="inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium ring-1 ring-border hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          >
+            <FileText className="h-3.5 w-3.5" aria-hidden /> Export PDF
           </button>
           <button
             onClick={exportJson}
-            className="inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium ring-1 ring-border hover:bg-secondary"
+            className="inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium ring-1 ring-border hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
-            <Download className="h-3.5 w-3.5" /> Export JSON
+            <Download className="h-3.5 w-3.5" aria-hidden /> Export JSON
           </button>
         </div>
       </header>
+
 
       <div className="flex flex-1 overflow-hidden">
         {/* Step list */}

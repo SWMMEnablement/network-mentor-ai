@@ -1,8 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { Share2 } from "lucide-react";
 import { ProductWorkspace } from "@/components/sim/ProductWorkspace";
 import { TourOverlay } from "@/components/tour/TourOverlay";
 import { getTour } from "@/lib/tour-storage";
+import { buildShareLink } from "@/lib/tour-export";
+import { toast } from "sonner";
 import type { Tour } from "@/lib/tour-types";
 
 export const Route = createFileRoute("/tours/$tourId/play")({
@@ -27,25 +30,48 @@ function Play() {
   const step = tour.steps[index];
   const screenId = step?.screenId ?? tour.steps[0]?.screenId ?? "start";
 
+  const share = async () => {
+    const link = buildShareLink(tour);
+    try {
+      await navigator.clipboard.writeText(link);
+      toast.success("Permalink copied");
+    } catch {
+      toast.message("Permalink", { description: link });
+    }
+  };
+
   return (
-    <div className="flex h-screen flex-col">
+    <div className="flex h-dvh flex-col">
       <header className="flex h-12 items-center justify-between border-b border-border bg-background px-4">
-        <Link to="/tours" className="text-sm text-muted-foreground hover:text-foreground">
+        <Link
+          to="/tours"
+          className="rounded px-2 py-1 text-sm text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        >
           ← Library
         </Link>
-        <div className="font-display text-sm font-semibold">{tour.title}</div>
-        <div className="flex gap-2 text-xs">
+        <div className="truncate font-display text-sm font-semibold">{tour.title}</div>
+        <div className="flex items-center gap-2 text-xs">
+          <div className="flex gap-1" role="group" aria-label="Playback mode">
+            <button
+              onClick={() => setMode("guided")}
+              aria-pressed={mode === "guided"}
+              className={`rounded-md px-2 py-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${mode === "guided" ? "bg-foreground text-background" : "ring-1 ring-border"}`}
+            >
+              Guided
+            </button>
+            <button
+              onClick={() => setMode("let-me-try")}
+              aria-pressed={mode === "let-me-try"}
+              className={`rounded-md px-2 py-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${mode === "let-me-try" ? "bg-foreground text-background" : "ring-1 ring-border"}`}
+            >
+              Let me try
+            </button>
+          </div>
           <button
-            onClick={() => setMode("guided")}
-            className={`rounded-md px-2 py-1 ${mode === "guided" ? "bg-foreground text-background" : "ring-1 ring-border"}`}
+            onClick={share}
+            className="inline-flex items-center gap-1 rounded-md px-2 py-1 ring-1 ring-border hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
-            Guided
-          </button>
-          <button
-            onClick={() => setMode("let-me-try")}
-            className={`rounded-md px-2 py-1 ${mode === "let-me-try" ? "bg-foreground text-background" : "ring-1 ring-border"}`}
-          >
-            Let me try
+            <Share2 className="h-3.5 w-3.5" aria-hidden /> Share
           </button>
         </div>
       </header>

@@ -96,7 +96,7 @@ export function TourOverlay({ steps, index, containerRef, onNext, onBack, onClos
             )}
           </mask>
         </defs>
-        <rect width="100%" height="100%" fill="rgba(10,15,25,0.55)" mask="url(#spotlight-mask)" />
+        <rect width="100%" height="100%" fill="rgba(4,8,16,0.72)" mask="url(#spotlight-mask)" />
         {rect && (
           <rect
             x={rect.left - PAD}
@@ -105,8 +105,8 @@ export function TourOverlay({ steps, index, containerRef, onNext, onBack, onClos
             height={rect.height + PAD * 2}
             rx="8"
             fill="none"
-            stroke="oklch(0.62 0.13 195)"
-            strokeWidth="2"
+            stroke="var(--ring)"
+            strokeWidth="2.5"
             strokeDasharray="6 4"
           />
         )}
@@ -136,19 +136,27 @@ export function TourOverlay({ steps, index, containerRef, onNext, onBack, onClos
           transition={{ duration: 0.18 }}
           className="pointer-events-auto absolute z-50 w-[340px] rounded-lg bg-popover p-4 text-popover-foreground shadow-2xl ring-1 ring-border"
           style={tooltipPosition(rect)}
+          role="dialog"
+          aria-labelledby={`tour-step-${step.id}-title`}
+          aria-describedby={`tour-step-${step.id}-body`}
         >
           <div className="mb-1 flex items-center gap-2 text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
-            <span className="inline-block h-1.5 w-1.5 rounded-full bg-accent" />
+            <span className="inline-block h-1.5 w-1.5 rounded-full bg-accent" aria-hidden />
             Step {index + 1} of {steps.length}
           </div>
-          <h3 className="mb-1 font-display text-base font-semibold">{step.title}</h3>
-          <div className="prose prose-sm mb-3 max-w-none text-sm leading-relaxed text-foreground/90 dark:prose-invert prose-p:my-1 prose-strong:text-foreground prose-code:rounded prose-code:bg-secondary prose-code:px-1 prose-code:py-0.5 prose-code:text-foreground prose-code:before:content-none prose-code:after:content-none">
+          <h3 id={`tour-step-${step.id}-title`} className="mb-1 font-display text-base font-semibold text-foreground">
+            {step.title}
+          </h3>
+          <div
+            id={`tour-step-${step.id}-body`}
+            className="prose prose-sm mb-3 max-w-none text-sm leading-relaxed text-foreground dark:prose-invert prose-p:my-1 prose-strong:text-foreground prose-code:rounded prose-code:bg-secondary prose-code:px-1 prose-code:py-0.5 prose-code:text-foreground prose-code:before:content-none prose-code:after:content-none"
+          >
             <ReactMarkdown>{step.body || "_No description yet._"}</ReactMarkdown>
           </div>
           <div className="flex items-center justify-between gap-2">
             <button
               onClick={onClose}
-              className="text-xs text-muted-foreground hover:text-foreground"
+              className="rounded px-1 text-xs text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
               Skip tour
             </button>
@@ -156,14 +164,15 @@ export function TourOverlay({ steps, index, containerRef, onNext, onBack, onClos
               {index > 0 && (
                 <button
                   onClick={onBack}
-                  className="rounded-md px-3 py-1.5 text-xs font-medium ring-1 ring-border hover:bg-accent/10"
+                  className="rounded-md px-3 py-1.5 text-xs font-medium ring-1 ring-border hover:bg-accent/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 >
                   Back
                 </button>
               )}
               <button
                 onClick={onNext}
-                className="rounded-md bg-foreground px-3 py-1.5 text-xs font-medium text-background hover:opacity-90"
+                autoFocus
+                className="rounded-md bg-foreground px-3 py-1.5 text-xs font-medium text-background hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-popover"
               >
                 {mode === "let-me-try" ? "Skip" : index === steps.length - 1 ? "Done" : "Next"}
               </button>
