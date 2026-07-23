@@ -96,7 +96,7 @@ export function TourOverlay({ steps, index, containerRef, onNext, onBack, onClos
             )}
           </mask>
         </defs>
-        <rect width="100%" height="100%" fill="rgba(10,15,25,0.55)" mask="url(#spotlight-mask)" />
+        <rect width="100%" height="100%" fill="rgba(4,8,16,0.72)" mask="url(#spotlight-mask)" />
         {rect && (
           <rect
             x={rect.left - PAD}
@@ -105,8 +105,8 @@ export function TourOverlay({ steps, index, containerRef, onNext, onBack, onClos
             height={rect.height + PAD * 2}
             rx="8"
             fill="none"
-            stroke="oklch(0.62 0.13 195)"
-            strokeWidth="2"
+            stroke="var(--ring)"
+            strokeWidth="2.5"
             strokeDasharray="6 4"
           />
         )}
