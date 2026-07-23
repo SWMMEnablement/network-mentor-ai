@@ -60,14 +60,19 @@ function Author() {
     update({ ...tour, steps });
   };
 
-  const exportJson = () => {
-    const blob = new Blob([JSON.stringify(tour, null, 2)], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `${tour.title.replace(/\s+/g, "-")}.json`;
-    a.click();
-    URL.revokeObjectURL(url);
+  const exportJson = () => exportTourJson(tour);
+  const exportPdf = () => {
+    exportTourPdf(tour);
+    toast.success("PDF downloaded");
+  };
+  const share = async () => {
+    const link = buildShareLink(tour);
+    try {
+      await navigator.clipboard.writeText(link);
+      toast.success("Permalink copied to clipboard");
+    } catch {
+      toast.message("Permalink", { description: link });
+    }
   };
 
   // Click-to-pick: while picking, the next data-sim click becomes the target.
