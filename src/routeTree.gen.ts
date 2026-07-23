@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as ToursRouteImport } from './routes/tours'
 import { Route as TemplatesRouteImport } from './routes/templates'
 import { Route as SharedRouteImport } from './routes/shared'
+import { Route as QaRouteImport } from './routes/qa'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ToursTourIdRouteImport } from './routes/tours.$tourId'
 import { Route as TemplatesTemplateIdRouteImport } from './routes/templates.$templateId'
@@ -32,6 +33,11 @@ const TemplatesRoute = TemplatesRouteImport.update({
 const SharedRoute = SharedRouteImport.update({
   id: '/shared',
   path: '/shared',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const QaRoute = QaRouteImport.update({
+  id: '/qa',
+  path: '/qa',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -67,6 +73,7 @@ const ApiAiGenerateTourRoute = ApiAiGenerateTourRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/qa': typeof QaRoute
   '/shared': typeof SharedRoute
   '/templates': typeof TemplatesRouteWithChildren
   '/tours': typeof ToursRouteWithChildren
@@ -78,6 +85,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/qa': typeof QaRoute
   '/shared': typeof SharedRoute
   '/templates': typeof TemplatesRouteWithChildren
   '/tours': typeof ToursRouteWithChildren
@@ -90,6 +98,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/qa': typeof QaRoute
   '/shared': typeof SharedRoute
   '/templates': typeof TemplatesRouteWithChildren
   '/tours': typeof ToursRouteWithChildren
@@ -103,6 +112,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/qa'
     | '/shared'
     | '/templates'
     | '/tours'
@@ -114,6 +124,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/qa'
     | '/shared'
     | '/templates'
     | '/tours'
@@ -125,6 +136,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/qa'
     | '/shared'
     | '/templates'
     | '/tours'
@@ -137,6 +149,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  QaRoute: typeof QaRoute
   SharedRoute: typeof SharedRoute
   TemplatesRoute: typeof TemplatesRouteWithChildren
   ToursRoute: typeof ToursRouteWithChildren
@@ -165,6 +178,13 @@ declare module '@tanstack/react-router' {
       path: '/shared'
       fullPath: '/shared'
       preLoaderRoute: typeof SharedRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/qa': {
+      id: '/qa'
+      path: '/qa'
+      fullPath: '/qa'
+      preLoaderRoute: typeof QaRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -248,6 +268,7 @@ const ToursRouteWithChildren = ToursRoute._addFileChildren(ToursRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  QaRoute: QaRoute,
   SharedRoute: SharedRoute,
   TemplatesRoute: TemplatesRouteWithChildren,
   ToursRoute: ToursRouteWithChildren,
