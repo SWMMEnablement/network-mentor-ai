@@ -80,6 +80,7 @@ function Hub() {
             <a href="#features" className="text-muted-foreground hover:text-foreground">Features</a>
             <Link to="/templates" className="text-muted-foreground hover:text-foreground">Templates</Link>
             <Link to="/tours" className="text-muted-foreground hover:text-foreground">Tour library</Link>
+            <Link to="/qa" className="text-muted-foreground hover:text-foreground">QA</Link>
           </nav>
         </div>
       </header>
