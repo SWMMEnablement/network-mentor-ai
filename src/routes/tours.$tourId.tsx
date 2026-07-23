@@ -111,18 +111,32 @@ function Author() {
         <div className="flex items-center gap-2">
           <button
             onClick={() => setPreview((p) => !p)}
-            className="inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium ring-1 ring-border hover:bg-secondary"
+            aria-pressed={preview}
+            className="inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium ring-1 ring-border hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
-            <Play className="h-3.5 w-3.5" /> {preview ? "Stop preview" : "Preview"}
+            <Play className="h-3.5 w-3.5" aria-hidden /> {preview ? "Stop preview" : "Preview"}
+          </button>
+          <button
+            onClick={share}
+            className="inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium ring-1 ring-border hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          >
+            <Share2 className="h-3.5 w-3.5" aria-hidden /> Share link
+          </button>
+          <button
+            onClick={exportPdf}
+            className="inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium ring-1 ring-border hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          >
+            <FileText className="h-3.5 w-3.5" aria-hidden /> Export PDF
           </button>
           <button
             onClick={exportJson}
-            className="inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium ring-1 ring-border hover:bg-secondary"
+            className="inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium ring-1 ring-border hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
-            <Download className="h-3.5 w-3.5" /> Export JSON
+            <Download className="h-3.5 w-3.5" aria-hidden /> Export JSON
           </button>
         </div>
       </header>
+
 
       <div className="flex flex-1 overflow-hidden">
         {/* Step list */}
