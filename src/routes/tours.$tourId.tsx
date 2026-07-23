@@ -1,11 +1,12 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { ArrowLeft, Play, Trash2, Plus, Download } from "lucide-react";
+import { ArrowLeft, Play, Trash2, Plus, Download, FileText, Share2 } from "lucide-react";
 import { ProductWorkspace } from "@/components/sim/ProductWorkspace";
 import { TourOverlay } from "@/components/tour/TourOverlay";
 import { getTour, saveTour } from "@/lib/tour-storage";
 import { productById } from "@/lib/products";
 import type { Tour, TourStep } from "@/lib/tour-types";
+import { exportTourJson, exportTourPdf, buildShareLink } from "@/lib/tour-export";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/tours/$tourId")({

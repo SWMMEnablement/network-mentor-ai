@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as ToursRouteImport } from './routes/tours'
 import { Route as TemplatesRouteImport } from './routes/templates'
+import { Route as SharedRouteImport } from './routes/shared'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ToursTourIdRouteImport } from './routes/tours.$tourId'
 import { Route as TemplatesTemplateIdRouteImport } from './routes/templates.$templateId'
@@ -26,6 +27,11 @@ const ToursRoute = ToursRouteImport.update({
 const TemplatesRoute = TemplatesRouteImport.update({
   id: '/templates',
   path: '/templates',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SharedRoute = SharedRouteImport.update({
+  id: '/shared',
+  path: '/shared',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -61,6 +67,7 @@ const ApiAiGenerateTourRoute = ApiAiGenerateTourRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/shared': typeof SharedRoute
   '/templates': typeof TemplatesRouteWithChildren
   '/tours': typeof ToursRouteWithChildren
   '/products/$productId': typeof ProductsProductIdRoute
@@ -71,6 +78,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/shared': typeof SharedRoute
   '/templates': typeof TemplatesRouteWithChildren
   '/tours': typeof ToursRouteWithChildren
   '/products/$productId': typeof ProductsProductIdRoute
@@ -82,6 +90,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/shared': typeof SharedRoute
   '/templates': typeof TemplatesRouteWithChildren
   '/tours': typeof ToursRouteWithChildren
   '/products/$productId': typeof ProductsProductIdRoute
@@ -94,6 +103,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/shared'
     | '/templates'
     | '/tours'
     | '/products/$productId'
@@ -104,6 +114,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/shared'
     | '/templates'
     | '/tours'
     | '/products/$productId'
@@ -114,6 +125,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/shared'
     | '/templates'
     | '/tours'
     | '/products/$productId'
@@ -125,6 +137,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  SharedRoute: typeof SharedRoute
   TemplatesRoute: typeof TemplatesRouteWithChildren
   ToursRoute: typeof ToursRouteWithChildren
   ProductsProductIdRoute: typeof ProductsProductIdRoute
@@ -145,6 +158,13 @@ declare module '@tanstack/react-router' {
       path: '/templates'
       fullPath: '/templates'
       preLoaderRoute: typeof TemplatesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/shared': {
+      id: '/shared'
+      path: '/shared'
+      fullPath: '/shared'
+      preLoaderRoute: typeof SharedRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -228,6 +248,7 @@ const ToursRouteWithChildren = ToursRoute._addFileChildren(ToursRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  SharedRoute: SharedRoute,
   TemplatesRoute: TemplatesRouteWithChildren,
   ToursRoute: ToursRouteWithChildren,
   ProductsProductIdRoute: ProductsProductIdRoute,
