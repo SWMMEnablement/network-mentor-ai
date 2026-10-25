@@ -9,30 +9,20 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as ToursRouteImport } from './routes/tours'
-import { Route as TemplatesRouteImport } from './routes/templates'
-import { Route as SharedRouteImport } from './routes/shared'
-import { Route as QaRouteImport } from './routes/qa'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as ToursTourIdRouteImport } from './routes/tours.$tourId'
-import { Route as TemplatesTemplateIdRouteImport } from './routes/templates.$templateId'
+import { Route as QaRouteImport } from './routes/qa'
+import { Route as SharedRouteImport } from './routes/shared'
+import { Route as TemplatesRouteImport } from './routes/templates'
+import { Route as ToursRouteImport } from './routes/tours'
 import { Route as ProductsProductIdRouteImport } from './routes/products.$productId'
-import { Route as ToursTourIdPlayRouteImport } from './routes/tours.$tourId.play'
+import { Route as TemplatesTemplateIdRouteImport } from './routes/templates.$templateId'
+import { Route as ToursTourIdRouteImport } from './routes/tours.$tourId'
 import { Route as ApiAiGenerateTourRouteImport } from './routes/api/ai/generate-tour'
+import { Route as ToursTourIdPlayRouteImport } from './routes/tours.$tourId.play'
 
-const ToursRoute = ToursRouteImport.update({
-  id: '/tours',
-  path: '/tours',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const TemplatesRoute = TemplatesRouteImport.update({
-  id: '/templates',
-  path: '/templates',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SharedRoute = SharedRouteImport.update({
-  id: '/shared',
-  path: '/shared',
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const QaRoute = QaRouteImport.update({
@@ -40,35 +30,45 @@ const QaRoute = QaRouteImport.update({
   path: '/qa',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+const SharedRoute = SharedRouteImport.update({
+  id: '/shared',
+  path: '/shared',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ToursTourIdRoute = ToursTourIdRouteImport.update({
-  id: '/$tourId',
-  path: '/$tourId',
-  getParentRoute: () => ToursRoute,
+const TemplatesRoute = TemplatesRouteImport.update({
+  id: '/templates',
+  path: '/templates',
+  getParentRoute: () => rootRouteImport,
 } as any)
-const TemplatesTemplateIdRoute = TemplatesTemplateIdRouteImport.update({
-  id: '/$templateId',
-  path: '/$templateId',
-  getParentRoute: () => TemplatesRoute,
+const ToursRoute = ToursRouteImport.update({
+  id: '/tours',
+  path: '/tours',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const ProductsProductIdRoute = ProductsProductIdRouteImport.update({
   id: '/products/$productId',
   path: '/products/$productId',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ToursTourIdPlayRoute = ToursTourIdPlayRouteImport.update({
-  id: '/play',
-  path: '/play',
-  getParentRoute: () => ToursTourIdRoute,
+const TemplatesTemplateIdRoute = TemplatesTemplateIdRouteImport.update({
+  id: '/$templateId',
+  path: '/$templateId',
+  getParentRoute: () => TemplatesRoute,
+} as any)
+const ToursTourIdRoute = ToursTourIdRouteImport.update({
+  id: '/$tourId',
+  path: '/$tourId',
+  getParentRoute: () => ToursRoute,
 } as any)
 const ApiAiGenerateTourRoute = ApiAiGenerateTourRouteImport.update({
   id: '/api/ai/generate-tour',
   path: '/api/ai/generate-tour',
   getParentRoute: () => rootRouteImport,
+} as any)
+const ToursTourIdPlayRoute = ToursTourIdPlayRouteImport.update({
+  id: '/play',
+  path: '/play',
+  getParentRoute: () => ToursTourIdRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
@@ -159,25 +159,11 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/tours': {
-      id: '/tours'
-      path: '/tours'
-      fullPath: '/tours'
-      preLoaderRoute: typeof ToursRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/templates': {
-      id: '/templates'
-      path: '/templates'
-      fullPath: '/templates'
-      preLoaderRoute: typeof TemplatesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/shared': {
-      id: '/shared'
-      path: '/shared'
-      fullPath: '/shared'
-      preLoaderRoute: typeof SharedRouteImport
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/qa': {
@@ -187,26 +173,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof QaRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+    '/shared': {
+      id: '/shared'
+      path: '/shared'
+      fullPath: '/shared'
+      preLoaderRoute: typeof SharedRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/tours/$tourId': {
-      id: '/tours/$tourId'
-      path: '/$tourId'
-      fullPath: '/tours/$tourId'
-      preLoaderRoute: typeof ToursTourIdRouteImport
-      parentRoute: typeof ToursRoute
+    '/templates': {
+      id: '/templates'
+      path: '/templates'
+      fullPath: '/templates'
+      preLoaderRoute: typeof TemplatesRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/templates/$templateId': {
-      id: '/templates/$templateId'
-      path: '/$templateId'
-      fullPath: '/templates/$templateId'
-      preLoaderRoute: typeof TemplatesTemplateIdRouteImport
-      parentRoute: typeof TemplatesRoute
+    '/tours': {
+      id: '/tours'
+      path: '/tours'
+      fullPath: '/tours'
+      preLoaderRoute: typeof ToursRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/products/$productId': {
       id: '/products/$productId'
@@ -215,12 +201,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProductsProductIdRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/tours/$tourId/play': {
-      id: '/tours/$tourId/play'
-      path: '/play'
-      fullPath: '/tours/$tourId/play'
-      preLoaderRoute: typeof ToursTourIdPlayRouteImport
-      parentRoute: typeof ToursTourIdRoute
+    '/templates/$templateId': {
+      id: '/templates/$templateId'
+      path: '/$templateId'
+      fullPath: '/templates/$templateId'
+      preLoaderRoute: typeof TemplatesTemplateIdRouteImport
+      parentRoute: typeof TemplatesRoute
+    }
+    '/tours/$tourId': {
+      id: '/tours/$tourId'
+      path: '/$tourId'
+      fullPath: '/tours/$tourId'
+      preLoaderRoute: typeof ToursTourIdRouteImport
+      parentRoute: typeof ToursRoute
     }
     '/api/ai/generate-tour': {
       id: '/api/ai/generate-tour'
@@ -228,6 +221,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/api/ai/generate-tour'
       preLoaderRoute: typeof ApiAiGenerateTourRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/tours/$tourId/play': {
+      id: '/tours/$tourId/play'
+      path: '/play'
+      fullPath: '/tours/$tourId/play'
+      preLoaderRoute: typeof ToursTourIdPlayRouteImport
+      parentRoute: typeof ToursTourIdRoute
     }
   }
 }
